@@ -6,7 +6,7 @@ describe('Testes da Funcionalidade Usuários', () => {
     it('Deve listar usuários cadastrados', () => {
      cy.request({
         method: 'GET',
-        url: 'http://localhost:3000/usuarios'
+        url: 'usuarios'
      }).then((response) =>{
 expect(response.body.usuarios[0].nome).to.equal('Heitor Monticelli Silveira')
 expect(response.status).to.equal(200)
@@ -19,7 +19,7 @@ expect(response.duration).to.be.lessThan(15)
      
          cy.request({
 method: 'POST',
-url:'http://localhost:3000/usuarios',
+url:'usuarios',
 body: {
      "nome":'Heitor Monticelli Silveira',
      "email":(faker.internet.email()),
@@ -30,11 +30,11 @@ body: {
          })
     });
 
-    it('Deve validar um usuário com email inválido', () => {
+    it('Deve validar um usuário com email repetido', () => {
               
      cy.request({
           method: 'POST',
-          url:'http://localhost:3000/usuarios',
+          url:'usuarios',
           body: {
                "nome":'Heitor Monticelli Silveira',
                "email":'Heitorfilho@ebac.com.br',
@@ -48,16 +48,16 @@ body: {
                    })
     });
 
-    it('Deve editar um usuário previamente cadastrado', () => {
-         cy.request('http://localhost:3000/usuarios').then(response =>{
+    it('Deve editar um usuário já cadastrado', () => {
+         cy.request('usuarios').then(response =>{
 
 let id = (response.body.usuarios[0]._id)
 cy.request({
      method:'PUT',
-     url:`http://localhost:3000/usuarios/${id}`,
+     url:`usuarios/${id}`,
      body:{
           "nome": "Fulano da Silva",
-          "email": "fulano@qa.com",
+          "email":(faker.internet.email()),
           "password": "teste",
           "administrador": "true"
         }
@@ -68,6 +68,8 @@ expect(response.body.message).to.equal('Registro alterado com sucesso')
 })
 
          })
+
+
     });
 
     it('Deve deletar um usuário previamente cadastrado', () => {
@@ -76,10 +78,10 @@ expect(response.body.message).to.equal('Registro alterado com sucesso')
      let id = (response.body.usuarios[0]._id)
      cy.request({
           method:'PUT',
-          url:`http://localhost:3000/usuarios/${id}`,
+          url:`usuarios/${id}`,
           body:{
                "nome": "Fulano da Silva",
-               "email": "fulano@qa.com",
+               "email":(faker.internet.email()),
                "password": "teste",
                "administrador": "true"
              }
@@ -87,7 +89,7 @@ expect(response.body.message).to.equal('Registro alterado com sucesso')
              })
              cy.request({
                method:'DELETE',
-               url:`http://localhost:3000/usuarios/${id}`,
+               url:`usuarios/${id}`,
           }).then(response =>{
 expect(response.body.message).to.equal('Registro excluído com sucesso')
 expect(response.status).to.equal(200)
